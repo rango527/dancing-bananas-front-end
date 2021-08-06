@@ -161,7 +161,7 @@ function LandingContainer({
                 )
             ) {
                 if (location.protocol !== 'https:') {
-                    location.protocol = 'https:';
+                    location.protocol = 'http:';
                 }
             }
         } catch (e) {
