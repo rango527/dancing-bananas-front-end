@@ -45,6 +45,7 @@
         "graphql": "^15.4.0",
         "highcharts": "^9.0.0",
         "highcharts-react-official": "^3.0.0",
+        "ioredis": "^4.27.7",
         "match-sorter": "^6.3.0",
         "mixpanel-browser": "^2.40.0",
         "node-sass": "^4.0.0",

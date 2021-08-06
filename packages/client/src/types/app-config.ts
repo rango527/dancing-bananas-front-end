@@ -19,8 +19,17 @@ type Network = {
         >;
     };
 };
+
+type Redis = {
+    host: string;
+    port: number;
+    db: number;
+    password: string;
+};
+
 export default interface AppConfig {
     wsApi: string;
+    redis: Redis;
     networks: Network;
     ethAddress: string;
     etherscanApiKey: string;

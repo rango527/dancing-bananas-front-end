@@ -16,6 +16,7 @@ import ConnectWalletModal from 'components/connect-wallet-modal';
 import { PageError, ModalError } from 'components/page-error';
 
 import { WalletProvider } from 'hooks/use-wallet';
+import redis from 'util/redis';
 
 function App(): ReactElement {
     // ------------------ Initial Mount - API calls for first render ------------------
@@ -26,8 +27,10 @@ function App(): ReactElement {
     //     lookups: null,
     //     byLiquidity: null,
     // });
-
+    //console.log("use eth gas 1");
+    redis.status;
     const gasPrices = useEthGasPrices();
+    console.log(gasPrices);
     const [showConnectWallet, setShowConnectWallet] = useState(false);
     // subscribe to the hook, will propogate to the nearest boundary
 

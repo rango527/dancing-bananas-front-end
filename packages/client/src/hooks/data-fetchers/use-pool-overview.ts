@@ -21,6 +21,7 @@ export const usePoolOverview = (
     poolId: string | null,
 ): UsePoolOverview => {
     const getPoolOverview = async () => {
+        console.log('getPoolOverview start');
         if (!poolId) return;
         if (!network) network = '1';
 

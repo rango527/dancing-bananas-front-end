@@ -179,7 +179,6 @@ export const LiquidityContainer = ({
 }): JSX.Element => {
     const { wallet } = useWallet();
     const currentLevel = storage.getLevel();
-
     const { data: randomPool } = usePoolOverview(wallet.network, poolId);
 
     // NANA: WETH-TRU for test

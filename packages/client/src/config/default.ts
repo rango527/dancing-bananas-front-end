@@ -2,6 +2,12 @@ import AppConfig from 'types/app-config';
 
 const config: AppConfig = {
     wsApi: 'ws://localhost:3001/realtime',
+    redis: {
+        host: process.env.REDIS_URL || '127.0.0.1',
+        port: 6379,
+        db: 0,
+        password: '',
+    },
     networks: {
         '1': {
             id: 1, // https://chainid.network/

@@ -25,6 +25,7 @@ export class EthGasStream extends EventEmitter {
     static emitter = new EventEmitter();
 
     static startConnection(): WebSocket {
+        console.log('getting gas price');
         EthGasStream.ws = new WebSocket('wss://www.gasnow.org/ws/gasprice');
         return EthGasStream.ws;
     }

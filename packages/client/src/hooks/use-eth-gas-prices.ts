@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useWebSocket from 'react-use-websocket';
+import redis from 'util/redis';
 
 import { debug } from 'util/debug';
 import { EthGasPrices } from '@sommelier/shared-types';
@@ -15,6 +16,7 @@ export function useEthGasPrices(): EthGasPrices | null {
     const { sendJsonMessage, lastJsonMessage } = useWebSocket(config.wsApi);
 
     useEffect(() => {
+        console.log('useEthGasPrices effect 1');
         if (!isSubscribed) {
             sendJsonMessage({
                 op: 'subscribe',
@@ -22,12 +24,27 @@ export function useEthGasPrices(): EthGasPrices | null {
             });
             setIsSubscribed(true);
         }
+        console.log('useEthGasPrices effect 1 end');
     }, [isSubscribed, sendJsonMessage]);
 
     useEffect(() => {
+        // console.log("useEthGasPrices effect 2 start");
+        // //redis.connect();
+        // console.log("status", redis.status);
+
+        // redis.get("gasprices", function (err, result) {
+        //     if (err) {
+        //         console.log(err);
+        //     } else {
+        //         console.log("no error");
+        //         return result;
+        //     }
+        // });
+
         // if no message, bail
         if (!lastJsonMessage) return;
 
+        console.log('useEthGasPrices effect 2 end');
         // if no topic, bail
         const { topic } = lastJsonMessage;
         if (!topic) return;
@@ -43,7 +60,15 @@ export function useEthGasPrices(): EthGasPrices | null {
                 setGasPrices(newGasPrices);
             }
 
+            //redis.set("test", "data");//, "EX", 120);
             debug.gasPrices = newGasPrices;
+        }
+
+        console.log('test');
+        console.log(lastJsonMessage);
+        console.log('test');
+        if (gasPrices) {
+            // redis.set("gasprices", gasPrices, "EX", 120);
         }
     }, [lastJsonMessage, gasPrices]);
 
