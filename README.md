@@ -1,4 +1,4 @@
-# Dancing Bananas
+# The Dancing Bananas
 
 This repo is a fork of the web application for [Sommelier.finance](https://app.sommelier.finance) and a new game for silly apes.
 
@@ -8,7 +8,7 @@ This repo is a fork of the web application for [Sommelier.finance](https://app.s
 
 ## Packages
 
--   `client` - the frontend interface for the Sommelier stack. Made with [Create React App](https://github.com/facebook/create-react-app).
+-   `client` - the frontend interface for the Dancing Bananas. Made with [Create React App](https://github.com/facebook/create-react-app).
 -   `deploy` - Scripts and tools for deployment on Sommelier infra (work in progress).
 -   `server` - a Node.js Express server handling data querying and caching for the front end. No database - it's a stateless integration later.
 -   `sommelier-types` - TypeScript types and other shared code between packages.
