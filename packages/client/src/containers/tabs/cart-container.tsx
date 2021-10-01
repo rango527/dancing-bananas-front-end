@@ -5,6 +5,7 @@ import {
     BoundsState,
     TokenInputAmount,
     LiquidityBasketData,
+    CollectFeeBasketData,
 } from 'types/states';
 import { EthGasPrices } from '@sommelier/shared-types';
 import { formatUSD, formatNumber } from 'util/formats';
@@ -22,6 +23,7 @@ import pngBanana1 from 'styles/images/banana-1.png';
 import pngBanana2 from 'styles/images/banana-2.png';
 import pngDancingBanana from 'styles/images/dancing-banana.png';
 import pngETH from 'styles/images/eth.png';
+import pngNana from 'styles/images/NANA.png';
 import pngChevronDown from 'styles/images/chevron-down.png';
 import pngDelete from 'styles/images/delete.png';
 import pngEditWhite from 'styles/images/edit-white.png';
@@ -31,6 +33,8 @@ import pngX from 'styles/images/X-119.png';
 import gameData from 'constants/gameData.json';
 import { storage } from 'util/localStorage';
 import { Level, Reward, RewardItem } from 'types/game';
+import { withStyles } from '@material-ui/core/styles';
+import { Box, Switch } from '@material-ui/core';
 
 import { useEthGasPrices } from 'hooks';
 //import { getGasPriceFromInfura } from 'services/infura-json-rpc';
@@ -59,6 +63,48 @@ import { getEstimateTime } from 'services/api-etherscan';
 
 const ETH_ID = config.ethAddress;
 
+const DefaultSwitch = withStyles((theme) => ({
+    root: {
+        width: 40,
+        height: 20,
+        padding: 0,
+        marginLeft: '25px',
+        marginRight: '25px',
+        display: 'flex',
+    },
+    switchBase: {
+        padding: 0,
+        marginTop: '2px',
+        color: theme.palette.common.white,
+        border: `1px solid ${theme.palette.common.black}`,
+        transform: 'translateX(3px)',
+        '&$checked': {
+            padding: 0,
+            marginTop: '2px',
+            transform: 'translateX(21px)',
+            color: theme.palette.common.white,
+            '& + $track': {
+                opacity: 1,
+                backgroundColor: '#00FE81',
+                borderColor: theme.palette.common.black,
+            },
+        },
+    },
+    thumb: {
+        width: 14,
+        height: 14,
+        boxShadow: 'none',
+    },
+    track: {
+        border: `1px solid ${theme.palette.common.black}`,
+        borderRadius: 20 / 2,
+        alignItems: 'center',
+        opacity: 1,
+        backgroundColor: '#E7EBF2',
+    },
+    checked: {},
+}))(Switch);
+
 const CartContainer = ({
     gasPrices,
     cartData,
@@ -79,6 +125,14 @@ const CartContainer = ({
     // console.log('cart', cartData);
     const [viewId, setViewId] = useState<string>('');
 
+    const [feeData, setFeeData] = useState<CollectFeeBasketData[]>(
+        storage.getFeeBasketData(),
+    );
+    const handleRemoveFee = (index: number) => {
+        feeData.splice(index, 1);
+        storage.setFeeBasketData([...feeData]);
+        setFeeData([...feeData]);
+    };
     const { wallet } = useWallet();
 
     let provider: ethers.providers.Web3Provider | null = null;
@@ -782,7 +836,7 @@ const CartContainer = ({
         rewards.push(bananaRewards.minnow);
     }
 
-    if (cartData.length === 0) {
+    if (cartData.length === 0 && feeData.length === 0) {
         return (
             <div className='cart-container'>
                 <div className='cart-container-head'>
@@ -966,6 +1020,130 @@ const CartContainer = ({
                                             {` `}
                                             <span className='white'>
                                                 {item.sentiment}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        },
+                    )}
+
+                    {feeData.map(
+                        (item: CollectFeeBasketData, index: number) => {
+                            return (
+                                <div key={`cart-item-${index}`}>
+                                    <div
+                                        className='cart-table-row'
+                                        key={`cart-item-${item.poolId}`}
+                                    >
+                                        <div className='cart-table-col left'>
+                                            <div
+                                                className='cart-token-exit-image'
+                                                onClick={(e) =>
+                                                    handleRemoveFee(index)
+                                                }
+                                            >
+                                                <img src={pngDelete} />
+                                            </div>
+                                            {item.actionType === 'collect' && (
+                                                <div className='cart-token-image'>
+                                                    {resolveLogo(
+                                                        item.token0Address,
+                                                    )}
+                                                </div>
+                                            )}
+                                            {item.actionType === 'collect' && (
+                                                <div className='cart-token-image'>
+                                                    {resolveLogo(
+                                                        item.token1Address,
+                                                    )}
+                                                </div>
+                                            )}
+                                            {item.actionType === 'collect' && (
+                                                <span className='cart-token-name'>{`${item.token0Name}/${item.token1Name}`}</span>
+                                            )}
+
+                                            {item.actionType ===
+                                                'collect all' && (
+                                                <div className='cart-token-image-feeall'>
+                                                    <span>
+                                                        <img
+                                                            src={pngNana}
+                                                            height='24px'
+                                                            width='24px'
+                                                        />
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {item.actionType ===
+                                                'collect all' && (
+                                                <span className='cart-token-name-feeall'>
+                                                    ALL POSITIONS
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className='cart-table-col center'>
+                                            <span className='cart-table-text2'>
+                                                COLLECT
+                                            </span>
+                                        </div>
+                                        <div className='cart-table-col right'>
+                                            {item.actionType === 'collect' && (
+                                                <span className='cart-table-text2'>
+                                                    {formatNumber(
+                                                        (Number(
+                                                            item.volumeUSD,
+                                                        ) /
+                                                            100) *
+                                                            0.1,
+                                                    )}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div
+                                        className={classNames(
+                                            'cart-table-row-details',
+                                        )}
+                                    >
+                                        <div className='row-detail-body flex'>
+                                            <div className='row-detail-collect'>
+                                                <span className='white'>
+                                                    LIQUIDITY
+                                                </span>
+                                                <span className='cart-table-text2'>
+                                                    {item.liquidity}$
+                                                </span>
+                                            </div>
+                                            <div className='row-detail-collect'>
+                                                <span className='white'>
+                                                    UNCOLLECTED FEES
+                                                </span>
+                                                <span className='cart-table-text2'>
+                                                    {item.fee}$
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className='row-detail-switch'>
+                                            <DefaultSwitch
+                                                checked={item.collectAsWeth}
+                                                name={
+                                                    'collectAsWeth' +
+                                                    item.positionId
+                                                }
+                                                onChange={(event: any) => {
+                                                    feeData[index] = {
+                                                        ...item,
+                                                        collectAsWeth: !item.collectAsWeth,
+                                                    };
+                                                    setFeeData([...feeData]);
+                                                    storage.setFeeBasketData(
+                                                        feeData,
+                                                    );
+                                                }}
+                                            />
+                                            <span className='white'>
+                                                collect as weth
                                             </span>
                                         </div>
                                     </div>

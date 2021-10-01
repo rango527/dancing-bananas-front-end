@@ -584,6 +584,9 @@ function LandingContainer({
                             onBack={() => {
                                 handleChangeTab('home');
                             }}
+                            onCollectFee={() => {
+                                handleChangeTab('cart');
+                            }}
                         />
                     )}
                 </Box>

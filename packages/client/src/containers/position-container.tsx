@@ -15,9 +15,11 @@ type Page = 'list' | 'detail';
 function PositionContainer({
     gasPrices,
     onBack,
+    onCollectFee,
 }: {
     gasPrices: EthGasPrices | null;
     onBack: () => void;
+    onCollectFee: () => void;
 }): JSX.Element {
     const { wallet } = useWallet();
 
@@ -79,6 +81,7 @@ function PositionContainer({
                         position: V3PositionData,
                         pt: 'positive' | 'negative',
                     ) => handleSelectPosition(position, pt)}
+                    onCollectFee={() => onCollectFee()}
                 />
             )}
             {page === 'detail' && positionsData !== null && (
@@ -87,6 +90,7 @@ function PositionContainer({
                     positionType={positionType}
                     onBack={() => handleBack()}
                     onClose={() => onBack()}
+                    onCollectFee={() => onCollectFee()}
                 />
             )}
         </>

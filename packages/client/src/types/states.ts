@@ -152,3 +152,18 @@ export interface LiquidityBasketData {
     sentiment: string;
     func: () => Promise<void>;
 }
+
+export interface CollectFeeBasketData {
+    poolId: string;
+    positionId: string;
+    poolName: string;
+    token0Address: string;
+    token0Name: string;
+    token1Address: string;
+    token1Name: string;
+    volumeUSD: string;
+    actionType: 'collect' | 'collect all';
+    collectAsWeth: boolean;
+    fee: string;
+    liquidity: string;
+}

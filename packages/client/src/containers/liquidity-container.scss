@@ -20,14 +20,15 @@
     cursor: pointer;
 
     &-monkey {
-        width: 96px;
-        height: 90px;
+        width: 134px;
+        height: 128px;
         z-index: 400;
     }
 
     &-gain {
         min-width: 221px;
-        height: 67px;
+        padding-top: 10px;
+        padding-bottom: 10px;
         background: #FFFFFF;
         border: 2.30769px solid #000000;
         box-shadow: 0px 1.20692px 0px rgba(0, 0, 0, 0.25);
@@ -47,8 +48,23 @@
             color: #4EEC91;
             font-size: 25px;
             line-height: 30px;
-            text-shadow: 0px 1.20692px 0px #000000;
+            text-shadow: 0px 1px 0px #000000;
             -webkit-text-stroke: 1px #000000;
+        }
+
+        &-collect {
+            padding: 5px 20px;
+            margin-top: 5px;
+            background: #E7EBF2;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            transform: matrix(1, 0, -0.02, 1, 0, 0);
+            text-shadow: 0px 1px 0px #000000;
+            -webkit-text-stroke: 1px #000000;
+            font-weight: normal;
+            font-size: 12px;
+            line-height: 13px;
+            color: #FFFFFF;
         }
     }
 }

@@ -4,6 +4,8 @@ import { formatUSD, formatNumber } from 'util/formats';
 import { resolveLogo } from 'components/token-with-logo';
 import pngX from 'styles/images/X-119.png';
 import classNames from 'classnames';
+import { CollectFeeBasketData } from 'types/states';
+import { storage } from 'util/localStorage';
 
 import './position-manager-container.scss';
 
@@ -132,6 +134,7 @@ const PositionManagerContainer = ({
     positionsData,
     onBack,
     onSelectPosition,
+    onCollectFee,
 }: {
     positionsData: V3PositionDataList;
     onBack: () => void;
@@ -139,11 +142,39 @@ const PositionManagerContainer = ({
         position: V3PositionData,
         pt: 'positive' | 'negative',
     ) => void;
+    onCollectFee: () => void;
 }): JSX.Element | null => {
     const [positionType, setPositionType] = useState<'positive' | 'negative'>(
         'positive',
     );
-    55;
+
+    const handleCollectAllFees = () => {
+        const fee = Object.values(positionsData)
+            .reduce(
+                (a, v) => (a = a.plus(v.stats.uncollectedFeesUSD)),
+                new BigNumber(0),
+            )
+            .toFixed(0);
+        const liquidity = Object.values(positionsData)
+            .reduce((a, v) => (a = a + Number(v.stats.usdAmount)), 0)
+            .toFixed(0);
+        const basketInfo: CollectFeeBasketData = {
+            poolId: '',
+            positionId: '0',
+            poolName: '',
+            token0Address: '',
+            token0Name: '',
+            token1Address: '',
+            token1Name: '',
+            volumeUSD: '',
+            actionType: 'collect all',
+            collectAsWeth: false,
+            fee,
+            liquidity,
+        };
+        storage.addFeeBasketData(basketInfo);
+        onCollectFee();
+    };
 
     const [v3Open, setV3Open] = useState<boolean>(true);
     const [v2Open, setV2Open] = useState<boolean>(true);
@@ -240,6 +271,12 @@ const PositionManagerContainer = ({
                     <div className='banana-win-badge-gain'>
                         BANANA WINS
                         <span>{formatUSD(plusSum.toString())}</span>
+                        <button
+                            className='banana-win-badge-gain-collect'
+                            onClick={handleCollectAllFees}
+                        >
+                            COLLECT ALL FEES
+                        </button>
                     </div>
                 </div>
                 {/* <div className='position-manager-total-liquidity-wrapper'>

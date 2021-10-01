@@ -1,4 +1,4 @@
-import { LiquidityBasketData } from 'types/states';
+import { LiquidityBasketData, CollectFeeBasketData } from 'types/states';
 import { Level, LevelTask } from 'types/game';
 import gameData from 'constants/gameData.json';
 import { EthGasPrices } from '@sommelier/shared-types';
@@ -124,6 +124,38 @@ const getBasketData = (): LiquidityBasketData[] => {
     }
 };
 
+const setFeeBasketData = (data: CollectFeeBasketData[]): void => {
+    const value = JSON.stringify(data);
+    localStorage.setItem('feebasket-data', value);
+};
+
+const addFeeBasketData = (data: CollectFeeBasketData): void => {
+    if (data.actionType === 'collect all') {
+        setFeeBasketData([data]);
+        return;
+    }
+    const basketData = getFeeBasketData();
+    const findIndex = basketData.findIndex(
+        (item) => item.actionType === 'collect all',
+    );
+
+    if (findIndex < 0) {
+        basketData.push(data);
+        setFeeBasketData([...basketData]);
+    }
+};
+
+const getFeeBasketData = (): CollectFeeBasketData[] => {
+    try {
+        const value = localStorage.getItem('feebasket-data');
+        if (!value) return [];
+        const data: CollectFeeBasketData[] = JSON.parse(value);
+        return data;
+    } catch (e) {
+        return [];
+    }
+};
+
 const setGasPrices = (data: EthGasPrices | null): void => {
     console.log('storage gas setting: ', data);
     const value = JSON.stringify(data);
@@ -155,6 +187,9 @@ export const storage = {
     setBasketData,
     addBasketData,
     getBasketData,
+    setFeeBasketData,
+    addFeeBasketData,
+    getFeeBasketData,
     getDefaultTaskStatus,
     getLevelTaskCompleted,
     getGasPrices,

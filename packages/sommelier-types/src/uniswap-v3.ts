@@ -757,6 +757,7 @@ export type GetPositionSnapshotsQuery = { __typename?: 'Query' } & {
                             | 'token1Price'
                             | 'sqrtPrice'
                             | 'liquidity'
+                            | 'volumeUSD'
                         > & {
                                 token0: { __typename?: 'Token' } & Pick<
                                     Token,
@@ -807,6 +808,7 @@ export type GetPositionsQuery = { __typename?: 'Query' } & {
                     | 'token1Price'
                     | 'sqrtPrice'
                     | 'liquidity'
+                    | 'volumeUSD'
                 > & {
                         token0: { __typename?: 'Token' } & Pick<
                             Token,

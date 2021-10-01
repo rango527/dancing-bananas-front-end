@@ -4,6 +4,8 @@ import { formatUSD, formatNumber } from 'util/formats';
 import { resolveLogo } from 'components/token-with-logo';
 import pngX from 'styles/images/X-119.png';
 import classNames from 'classnames';
+import { CollectFeeBasketData } from 'types/states';
+import { storage } from 'util/localStorage';
 
 import './position-manager-container.scss';
 
@@ -14,6 +16,7 @@ import pngChevronUp from 'styles/images/chevron-up.png';
 import pngMonkeyHappy from 'styles/images/monkey-happy.png';
 import pngTokenCRV from 'styles/images/tokens/CRV.png';
 import pngTokenETH from 'styles/images/tokens/ETH.png';
+import pngMoney from 'styles/images/money.png';
 
 import pngArrowLeft_1 from 'styles/images/left-arrow-1.png';
 import pngChevronRight from 'styles/images/chevron-right.png';
@@ -26,14 +29,40 @@ const PositionDetailContainer = ({
     positionType,
     onBack,
     onClose,
+    onCollectFee,
 }: {
     positionData: V3PositionData | null;
     positionType: 'positive' | 'negative';
     onBack: () => void;
     onClose: () => void;
+    onCollectFee: () => void;
 }): JSX.Element | null => {
     const [detailOpen, setDetailOpen] = useState<boolean>(true);
-
+    const handleCollectFee = () => {
+        if (positionData === null) {
+            return;
+        }
+        const pool = positionData.position.pool;
+        console.log('liquidity: ', positionData.position.liquidity);
+        const basketInfo: CollectFeeBasketData = {
+            poolId: pool.id,
+            positionId: positionData.position.id,
+            poolName: `${pool.token0.symbol}-${pool.token1.symbol}`,
+            token0Address: pool.token0.id,
+            token0Name: pool.token0.symbol,
+            token1Address: pool.token1.id,
+            token1Name: pool.token1.symbol,
+            volumeUSD: pool.volumeUSD,
+            actionType: 'collect',
+            collectAsWeth: false,
+            fee: new BigNumber(positionData.stats.uncollectedFeesUSD).toFixed(
+                2,
+            ),
+            liquidity: new BigNumber(positionData.stats.usdAmount).toFixed(0),
+        };
+        storage.addFeeBasketData(basketInfo);
+        onCollectFee();
+    };
     const getTotalGains = () => {
         const currentLiquidity =
             positionData?.stats?.usdAmount !== undefined
@@ -190,12 +219,19 @@ const PositionDetailContainer = ({
                                 {getTotalGains()}
                             </div>
                         </div>
-                        {/* <div className='position-detail-stats-action'>
-                            <button className='btn-remove-liquidity'>
-                                REMOVE
+                        <div className='position-detail-stats-action'>
+                            <button
+                                className='btn-collect-fee'
+                                onClick={handleCollectFee}
+                            >
+                                COLLECT FEES AND LIQUIDITY
+                                <img
+                                    src={pngMoney}
+                                    style={{ marginLeft: 15 }}
+                                    width='30'
+                                />
                             </button>
-                            <button className='btn-add-liquidity'>ADD</button>
-                        </div> */}
+                        </div>
                     </div>
                 )}
             </div>

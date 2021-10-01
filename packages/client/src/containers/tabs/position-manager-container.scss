@@ -413,12 +413,13 @@
             margin-top: 100px;
 
             button {
-                border: 1.79206px solid #000000;
+                border: 1px solid #000000;
                 box-sizing: border-box;
-                box-shadow: 0px 2.38941px 0px rgba(0, 0, 0, 0.25);
+                box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.25);
                 border-radius: 4.77882px;
                 color: #fff;
-                font-size: 17.9206px;
+                background-color: #71FFB9;
+                font-size: 16px;
                 line-height: 22px;
                 text-shadow: 0px 1.19471px 0px rgba(0, 0, 0, 0.25);
                 paint-order: stroke fill;
