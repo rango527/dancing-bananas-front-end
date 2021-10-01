@@ -1005,6 +1005,7 @@ export const GetPositionSnapshotsDocument = gql`
         token1Price
         sqrtPrice
         liquidity
+        volumeUSD
       }      
       liquidity
       depositedToken0
@@ -1057,6 +1058,7 @@ export const GetPositionsDocument = gql`
       token1Price
       sqrtPrice
       liquidity
+      volumeUSD
     }    
     liquidity
     depositedToken0
